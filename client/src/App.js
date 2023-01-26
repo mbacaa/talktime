@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login/Login";
-import Account from "./pages/Account/Account";
-import Chat from "./pages/Chat/Chat";
+import Login from "./pages/Login";
+import Account from "./pages/Account";
+import Chat from "./pages/Chat";
 
 const App = () => {
   return (
