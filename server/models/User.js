@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema(
 		username: {
 			type: String,
 			require: true,
-			min: 4,
+			min: 3,
 			max: 25,
 			unique: true,
 		},
@@ -20,21 +20,13 @@ const UserSchema = new mongoose.Schema(
 			required: true,
 			min: 5,
 		},
-		profilePicture: {
+		picture: {
 			type: String,
 			default: '',
 		},
 		isAdmin: {
 			type: Boolean,
 			default: false,
-		},
-		bio: {
-			type: String,
-			max: 150,
-		},
-		city: {
-			type: String,
-			max: 50,
 		},
 	},
 	{ timestamps: true }

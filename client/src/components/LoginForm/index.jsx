@@ -3,51 +3,86 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import Dropzone from "react-dropzone";
-
-const loginValidationSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters"),
-});
-
-const registerValidationSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters"),
-  email: Yup.string().required("Email is required").email("Email is invalid"),
-  password: Yup.string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters"),
-  confirmPassword: Yup.string()
-    .required("Confirm password is required")
-    .oneOf([Yup.ref("password"), null], "Passwords must match"),
-  picture: Yup.string().required("required"),
-});
-
-const loginInitialValues = { username: "", password: "" };
-
-const registerInitialValues = {
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  picture: "",
-};
+import formAxiosConfig from "../../utils/formAxiosConfig";
+import axiosConfig from "../../utils/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
-  const [isLogin, setIsLogin] = useState(true); 
+  const [isLogin, setIsLogin] = useState(true);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleLoginSubmit = (values) => {
-    console.log(values);
-    // Implement login logic here
+  const loginValidationSchema = Yup.object().shape({
+    username: Yup.string()
+      .required("Username is required")
+      .min(3, "Username must be at least 3 characters"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters"),
+  });
+
+  const registerValidationSchema = Yup.object().shape({
+    username: Yup.string()
+      .required("Username is required")
+      .min(3, "Username must be at least 3 characters"),
+    email: Yup.string().required("Email is required").email("Email is invalid"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(confirmPassword, "Passwords must match"),
+    picture: Yup.string().required("required"),
+  });
+
+  const loginInitialValues = { username: "", password: "" };
+
+  const registerInitialValues = {
+    username: "",
+    email: "",
+    password: "",
+    picture: "",
   };
 
-  const handleRegisterSubmit = (values) => {
-    console.log(values);
-    // Implement register logic here
+  const register = async (values, onSubmitProps) => {
+    try {
+      const formData = new FormData();
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("picture", values.picture.name);
+
+      const savedUserResponse = await formAxiosConfig.post(
+        "/auth/register",
+        formData,
+      );
+      const savedUser = await savedUserResponse.data;
+      onSubmitProps.resetForm();
+      savedUser && setIsLogin(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const login = async (values, onSubmitProps) => {
+    try {
+      const formData = {
+        username: values.username,
+        password: values.password,
+      };
+      const loggedInResponse = await axiosConfig.post("/auth/login", formData);
+      const loggedIn = await loggedInResponse.data;
+      onSubmitProps.resetForm();
+      loggedIn && navigate("/chat");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLoginSubmit = async (values, onSubmitProps) => {
+    await login(values, onSubmitProps);
+  };
+
+  const handleRegisterSubmit = async (values, onSubmitProps) => {
+    await register(values, onSubmitProps);
   };
 
   return (
@@ -90,6 +125,7 @@ const LoginForm = () => {
                     type="text"
                     name="username"
                     id="username"
+                    value={values.username}
                   />
 
                   <ErrorMessage
@@ -114,6 +150,7 @@ const LoginForm = () => {
                     type="password"
                     name="password"
                     id="password"
+                    value={values.password}
                   />
                   <ErrorMessage
                     className="text-red-500 text-xs"
@@ -133,7 +170,7 @@ const LoginForm = () => {
                     onClick={() => {
                       setIsLogin(!isLogin);
                     }}
-                    type="submit"
+                    type="button"
                   >
                     Register here.
                   </button>
@@ -181,6 +218,7 @@ const LoginForm = () => {
                     type="text"
                     name="username"
                     id="username"
+                    value={values.username}
                   />
 
                   <ErrorMessage
@@ -206,6 +244,7 @@ const LoginForm = () => {
                     type="text"
                     name="email"
                     id="email"
+                    value={values.email}
                   />
 
                   <ErrorMessage
@@ -214,7 +253,7 @@ const LoginForm = () => {
                     component="div"
                   />
                 </div>
-                <div className="text-sm border-dashed border-2 border-blue2 rounded-lg my-2 py-5 px-6 text-blue2 font-bold 	text-center">
+                <div className="text-sm border-dashed border-2 border-blue2 rounded-lg mt-4 mb-1 py-5 px-6 text-blue2 font-bold text-center">
                   <Dropzone
                     acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
@@ -226,7 +265,7 @@ const LoginForm = () => {
                       <div {...getRootProps()}>
                         <input {...getInputProps()} />
                         {!values.picture ? (
-                          <p>Click to Add Picture</p>
+                          <div>Drop a picture here!</div>
                         ) : (
                           <div>
                             <div>{values.picture.name}</div>
@@ -252,6 +291,7 @@ const LoginForm = () => {
                     type="password"
                     name="password"
                     id="password"
+                    value={values.password}
                   />
                   <ErrorMessage
                     className="text-red-500 text-xs"
@@ -275,6 +315,8 @@ const LoginForm = () => {
                     type="password"
                     name="confirmPassword"
                     id="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <ErrorMessage
                     className="text-red-500 text-xs"
@@ -294,7 +336,7 @@ const LoginForm = () => {
                     onClick={() => {
                       setIsLogin(!isLogin);
                     }}
-                    type="submit"
+                    type="button"
                   >
                     Login here.
                   </button>
