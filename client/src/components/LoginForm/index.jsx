@@ -72,7 +72,6 @@ const LoginForm = () => {
       onSubmitProps.resetForm();
       loggedIn && updateUserData(loggedIn.user, loggedIn.token);
       loggedIn && navigate("/chat");
-      console.log(USER_DATA.get(), JWT.get());
     } catch (error) {
       USER_DATA.set(null);
       JWT.set(null);
