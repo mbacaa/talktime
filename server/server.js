@@ -13,7 +13,6 @@ const usersRoutes = require('./routes/users.js');
 const { register } = require('./controllers/auth.js');
 
 /* CONFIG */
-
 dotenv.config();
 const PORT = process.env.PORT || 4000;
 const MONGO_URI = process.env.MONGO_URL;
@@ -48,7 +47,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-app.post('/api/auth/register', upload.single('picture'), register);
+app.post('/api/auth/register', upload.single('pictureFile'), register);
 
 /* ROUTES */
 app.use('/api/auth', authRoutes);

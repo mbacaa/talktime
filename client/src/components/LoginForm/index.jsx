@@ -1,11 +1,12 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
 import Dropzone from "react-dropzone";
-import formAxiosConfig from "../../utils/formAxiosConfig";
-import axiosConfig from "../../utils/axiosConfig";
+import { toast } from "react-hot-toast";
+import { useState } from "react";
+import { formAxiosConfig, axiosConfig } from "../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { USER_DATA, JWT, updateUserData } from "../../stores/userData";
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,7 +21,6 @@ const LoginForm = () => {
       .required("Password is required")
       .min(8, "Password must be at least 8 characters"),
   });
-
   const registerValidationSchema = Yup.object().shape({
     username: Yup.string()
       .required("Username is required")
@@ -30,26 +30,24 @@ const LoginForm = () => {
       .required("Password is required")
       .min(8, "Password must be at least 8 characters")
       .matches(confirmPassword, "Passwords must match"),
-    picture: Yup.string().required("required"),
+    pictureFile: Yup.string().required("required"),
   });
 
   const loginInitialValues = { username: "", password: "" };
-
   const registerInitialValues = {
     username: "",
     email: "",
     password: "",
-    picture: "",
+    pictureFile: "",
   };
 
   const register = async (values, onSubmitProps) => {
     try {
       const formData = new FormData();
-      formData.append("username", values.username);
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-      formData.append("picture", values.picture.name);
-
+      for (let value in values) {
+        formData.append(value, values[value]);
+      }
+      formData.append("picture", values.pictureFile.name);
       const savedUserResponse = await formAxiosConfig.post(
         "/auth/register",
         formData,
@@ -58,21 +56,27 @@ const LoginForm = () => {
       onSubmitProps.resetForm();
       savedUser && setIsLogin(true);
     } catch (error) {
+      toast.error("An error occured during register.");
       console.log(error);
     }
   };
 
   const login = async (values, onSubmitProps) => {
     try {
-      const formData = {
-        username: values.username,
-        password: values.password,
-      };
+      const formData = new FormData();
+      for (let value in values) {
+        formData.append(value, values[value]);
+      }
       const loggedInResponse = await axiosConfig.post("/auth/login", formData);
       const loggedIn = await loggedInResponse.data;
       onSubmitProps.resetForm();
+      loggedIn && updateUserData(loggedIn.user, loggedIn.token);
       loggedIn && navigate("/chat");
+      console.log(USER_DATA.get(), JWT.get());
     } catch (error) {
+      USER_DATA.set(null);
+      JWT.set(null);
+      toast.error("An error occured during register.");
       console.log(error);
     }
   };
@@ -80,7 +84,6 @@ const LoginForm = () => {
   const handleLoginSubmit = async (values, onSubmitProps) => {
     await login(values, onSubmitProps);
   };
-
   const handleRegisterSubmit = async (values, onSubmitProps) => {
     await register(values, onSubmitProps);
   };
@@ -258,17 +261,17 @@ const LoginForm = () => {
                     acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
                     onDrop={(acceptedFiles) =>
-                      setFieldValue("picture", acceptedFiles[0])
+                      setFieldValue("pictureFile", acceptedFiles[0])
                     }
                   >
                     {({ getRootProps, getInputProps }) => (
                       <div {...getRootProps()}>
                         <input {...getInputProps()} />
-                        {!values.picture ? (
+                        {!values.pictureFile ? (
                           <div>Drop a picture here!</div>
                         ) : (
                           <div>
-                            <div>{values.picture.name}</div>
+                            <div>{values.pictureFile.name}</div>
                           </div>
                         )}
                       </div>
@@ -332,7 +335,7 @@ const LoginForm = () => {
                     Register.
                   </button>
                   <button
-                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-500"
+                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-700"
                     onClick={() => {
                       setIsLogin(!isLogin);
                     }}

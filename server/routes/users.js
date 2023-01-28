@@ -1,10 +1,9 @@
 const express = require('express');
 const getUser = require('../controllers/users.js');
-// import { verifyToken } from '../middleware/auth.js';
+const verifyToken = require('../middleware/verifyToken.js');
 
 const router = express.Router();
-// dodaj verifyToken
 
-router.get('/:id', getUser);
+router.get('/:id', verifyToken, getUser);
 
 module.exports = router;
