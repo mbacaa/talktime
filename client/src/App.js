@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { USER_DATA, JWT } from "./stores/userData";
+import { useCookies } from "react-cookie";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
@@ -9,9 +9,8 @@ import ManageFriends from "./pages/ManageFriends";
 import AdminPanel from "./pages/AdminPanel";
 
 const App = () => {
-  const user = USER_DATA.get();
-  const isAuth = true;
-  const isAdmin = true;
+  const [cookies] = useCookies(["JWT_TOKEN"]);
+  const isAuth = cookies.JWT_TOKEN ? true : false;
   return (
     <div>
       <BrowserRouter>
@@ -30,12 +29,13 @@ const App = () => {
             element={isAuth ? <UpdateProfile /> : <Navigate to="/" />}
           ></Route>
           <Route
-            path="/profile/:username/friends"
+            path="friends"
             element={isAuth ? <ManageFriends /> : <Navigate to="/" />}
           ></Route>
           <Route
             path="/admin"
-            element={isAdmin ? <AdminPanel /> : <Navigate to="/" />}
+            // element={isAdmin ? <AdminPanel /> : <Navigate to="/" />}
+            element={<AdminPanel />}
           />
         </Routes>
       </BrowserRouter>

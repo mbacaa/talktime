@@ -2,15 +2,16 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Dropzone from "react-dropzone";
-import { toast } from "react-hot-toast";
-import { useState } from "react";
-import { formAxiosConfig, axiosConfig } from "../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
-import { USER_DATA, JWT, updateUserData } from "../../stores/userData";
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { formAxiosConfig, axiosConfig } from "../../utils/axiosConfig";
+import { updateUserData } from "../../stores/userData";
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [, setCookie] = useCookies(["JWT_TOKEN"]);
   const navigate = useNavigate();
 
   const loginValidationSchema = Yup.object().shape({
@@ -56,7 +57,6 @@ const LoginForm = () => {
       onSubmitProps.resetForm();
       savedUser && setIsLogin(true);
     } catch (error) {
-      toast.error("An error occured during register.");
       console.log(error);
     }
   };
@@ -69,13 +69,15 @@ const LoginForm = () => {
       }
       const loggedInResponse = await axiosConfig.post("/auth/login", formData);
       const loggedIn = await loggedInResponse.data;
-      onSubmitProps.resetForm();
       loggedIn && updateUserData(loggedIn.user, loggedIn.token);
+      setCookie("JWT_TOKEN", loggedIn.token, {
+        path: "/",
+        expires: new Date(Date.now() + 900000),
+      });
+      onSubmitProps.resetForm();
       loggedIn && navigate("/chat");
     } catch (error) {
-      USER_DATA.set(null);
-      JWT.set(null);
-      toast.error("An error occured during register.");
+      updateUserData(null, null);
       console.log(error);
     }
   };
@@ -255,7 +257,7 @@ const LoginForm = () => {
                     component="div"
                   />
                 </div>
-                <div className="text-sm border-dashed border-2 border-blue2 rounded-lg mt-4 mb-1 py-5 px-6 text-blue2 font-bold text-center">
+                <div className="text-sm border-dashed border-2 border-blue2 rounded-lg mt-4 mb-2 py-5 px-6 text-blue2 font-bold text-center cursor-pointer">
                   <Dropzone
                     acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
@@ -267,7 +269,7 @@ const LoginForm = () => {
                       <div {...getRootProps()}>
                         <input {...getInputProps()} />
                         {!values.pictureFile ? (
-                          <div>Drop a picture here!</div>
+                          <div>Drop here a picture!</div>
                         ) : (
                           <div>
                             <div>{values.pictureFile.name}</div>

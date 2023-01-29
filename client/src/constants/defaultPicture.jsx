@@ -1,4 +1,3 @@
-const defaultPicture =
-  "https://e7.pngegg.com/pngimages/722/477/png-clipart-computer-icons-user-profile-avatar-face-heroes.png";
+const defaultPicture = `http://localhost:4000/assets/defaultProfilePicture.png`;
 
 export default defaultPicture;

@@ -1,7 +1,7 @@
 import React from "react";
 import Conversations from "../../components/Conversations";
 import Messenger from "../../components/Messenger";
-import Friends from "../../components/FriendsPanel";
+import ActiveFriends from "../../components/ActiveFriends";
 import Toolbar from "../../components/Toolbar";
 
 const Chat = () => {
@@ -19,7 +19,7 @@ const Chat = () => {
                 <Messenger />
               </div>
               <div className="col-span-2">
-                <Friends />
+                <ActiveFriends />
               </div>
             </div>
             <div className="w-6">

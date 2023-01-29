@@ -11,6 +11,7 @@ const path = require('path');
 const authRoutes = require('./routes/auth.js');
 const usersRoutes = require('./routes/users.js');
 const { register } = require('./controllers/auth.js');
+const { updateUser } = require('./controllers/users.js');
 
 /* CONFIG */
 dotenv.config();
@@ -48,6 +49,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.post('/api/auth/register', upload.single('pictureFile'), register);
+app.post('/api/users/update', upload.single('pictureFile'), updateUser);
 
 /* ROUTES */
 app.use('/api/auth', authRoutes);

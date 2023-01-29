@@ -44,7 +44,7 @@ const CurrentUserProfile = () => {
           <button
             type="button"
             onClick={() => {
-              navigate(`/profile/${currentUser.username}/friends`);
+              navigate(`/friends`);
             }}
             className="h-48 flex gap-3 justify-center items-center bg-gray-100 rounded text-gray-700 hover:text-gray-900 hover:border-2"
           >
