@@ -1,5 +1,5 @@
 import React from "react";
-import { USER_DATA } from "../../stores/userData";
+import { useCookies } from "react-cookie";
 import {
   VscSettings,
   VscPreview,
@@ -9,7 +9,8 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const CurrentUserProfile = () => {
-  const currentUser = USER_DATA.get();
+  const [cookies] = useCookies(["USER_DATA"]);
+  const currentUser = cookies.USER_DATA;
   const navigate = useNavigate();
 
   return (
@@ -25,7 +26,7 @@ const CurrentUserProfile = () => {
             }}
             className="text-2xl justify-end ml-auto"
           >
-            <VscArrowLeft className="text-gray-700 hover:text-gray-900" />
+            <VscArrowLeft className="text-gray-100 hover:text-gray-300 mb-2" />
           </button>
         </div>
         <div className="grid grid-cols-3 gap-6 w-full h-full justify-center items-center">
@@ -34,7 +35,7 @@ const CurrentUserProfile = () => {
             onClick={() => {
               navigate(`/profile/${currentUser.username}/update`);
             }}
-            className="h-48 flex gap-3 justify-center items-center bg-gray-100 rounded text-gray-700 hover:text-gray-900 hover:border-2"
+            className="h-48 flex gap-3 justify-center items-center bg-slate-900/30 rounded hover:text-gray-300 hover:border-2 border-slate-900/30"
           >
             <div className="text-sm rounded-lg underline ">
               Update your profile
@@ -46,7 +47,7 @@ const CurrentUserProfile = () => {
             onClick={() => {
               navigate(`/friends`);
             }}
-            className="h-48 flex gap-3 justify-center items-center bg-gray-100 rounded text-gray-700 hover:text-gray-900 hover:border-2"
+            className="h-48 flex gap-3 justify-center items-center bg-slate-900/30 rounded hover:text-gray-300 hover:border-2 border-slate-900/30"
           >
             <div className="text-sm rounded-md underline ">
               Manage your friends
@@ -58,7 +59,7 @@ const CurrentUserProfile = () => {
             onClick={() => {
               navigate(`/admin`);
             }}
-            className="h-48 flex gap-3 justify-center items-center bg-gray-100 rounded text-gray-700 hover:text-gray-900 hover:border-2"
+            className="h-48 flex gap-3 justify-center items-center bg-slate-900/30 rounded hover:text-gray-300 hover:border-2 border-slate-900/30"
           >
             <div className="text-sm underline">Go to Admin Panel</div>
             <VscSettings className="text-2xl" />

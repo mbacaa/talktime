@@ -6,12 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { formAxiosConfig, axiosConfig } from "../../utils/axiosConfig";
-import { updateUserData } from "../../stores/userData";
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [, setCookie] = useCookies(["JWT_TOKEN"]);
+  const [, setCookie] = useCookies(["USER_DATA", "JWT_TOKEN"]);
   const navigate = useNavigate();
 
   const loginValidationSchema = Yup.object().shape({
@@ -69,15 +68,18 @@ const LoginForm = () => {
       }
       const loggedInResponse = await axiosConfig.post("/auth/login", formData);
       const loggedIn = await loggedInResponse.data;
-      loggedIn && updateUserData(loggedIn.user, loggedIn.token);
+
       setCookie("JWT_TOKEN", loggedIn.token, {
+        path: "/",
+        expires: new Date(Date.now() + 900000),
+      });
+      setCookie("USER_DATA", loggedIn.user, {
         path: "/",
         expires: new Date(Date.now() + 900000),
       });
       onSubmitProps.resetForm();
       loggedIn && navigate("/chat");
     } catch (error) {
-      updateUserData(null, null);
       console.log(error);
     }
   };
@@ -113,10 +115,7 @@ const LoginForm = () => {
             }) => (
               <Form className="py-4">
                 <div className="mb-4 h-14">
-                  <label
-                    className="block text-gray-600 text-sm mb-1"
-                    htmlFor="username"
-                  >
+                  <label className="block text-sm mb-1" htmlFor="username">
                     Username
                   </label>
 
@@ -125,7 +124,7 @@ const LoginForm = () => {
                       errors.username && touched.username
                         ? "border-red-500"
                         : "border-gray-400"
-                    } border py-1 rounded-md w-full text-sm px-1`}
+                    } border py-1 rounded-md w-full text-sm px-1 text-gray-900`}
                     type="text"
                     name="username"
                     id="username"
@@ -139,10 +138,7 @@ const LoginForm = () => {
                   />
                 </div>
                 <div className="mb-4 h-14">
-                  <label
-                    className="block text-gray-600 text-sm mb-1"
-                    htmlFor="password"
-                  >
+                  <label className="block text-sm mb-1" htmlFor="password">
                     Password
                   </label>
                   <Field
@@ -150,7 +146,7 @@ const LoginForm = () => {
                       errors.password && touched.password
                         ? "border-red-500"
                         : "border-gray-400"
-                    } border py-1 rounded-md w-full px-1`}
+                    } border py-1 rounded-md w-full px-1 text-gray-900`}
                     type="password"
                     name="password"
                     id="password"
@@ -164,13 +160,13 @@ const LoginForm = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center">
                   <button
-                    className="bg-gray-800 text-white text-sm rounded-md  py-1 px-4 mt-2 hover:bg-gray-700"
+                    className="bg-slate-800 text-white text-sm rounded-md py-1 px-4 mt-2 hover:bg-slate-900 transition duration-200"
                     type="submit"
                   >
                     Login.
                   </button>
                   <button
-                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-500"
+                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-300 transition duration-200"
                     onClick={() => {
                       setIsLogin(!isLogin);
                     }}
@@ -206,10 +202,7 @@ const LoginForm = () => {
             }) => (
               <Form className="py-4">
                 <div className="mb-4 h-14">
-                  <label
-                    className="block text-gray-600 text-sm mb-1"
-                    htmlFor="username"
-                  >
+                  <label className="block text-sm mb-1" htmlFor="username">
                     Username
                   </label>
 
@@ -217,8 +210,8 @@ const LoginForm = () => {
                     className={`${
                       errors.username && touched.username
                         ? "border-red-500"
-                        : "border-gray-400"
-                    } border py-1 rounded-md w-full text-sm px-1`}
+                        : "border-gray-500"
+                    } border py-1 rounded-md w-full text-gray-900 text-sm px-1`}
                     type="text"
                     name="username"
                     id="username"
@@ -232,10 +225,7 @@ const LoginForm = () => {
                   />
                 </div>
                 <div className="mb-4 h-14">
-                  <label
-                    className="block text-gray-600 text-sm mb-1"
-                    htmlFor="email"
-                  >
+                  <label className="blocktext-sm mb-1" htmlFor="email">
                     Email
                   </label>
 
@@ -244,7 +234,7 @@ const LoginForm = () => {
                       errors.username && touched.username
                         ? "border-red-500"
                         : "border-gray-400"
-                    } border py-1 rounded-md w-full text-sm px-1`}
+                    } border py-1 rounded-md w-full text-gray-900 text-sm px-1`}
                     type="text"
                     name="email"
                     id="email"
@@ -280,10 +270,7 @@ const LoginForm = () => {
                   </Dropzone>
                 </div>
                 <div className="mb-4 h-14">
-                  <label
-                    className="block text-gray-600 text-sm mb-1"
-                    htmlFor="password"
-                  >
+                  <label className="block  text-sm mb-1" htmlFor="password">
                     Password
                   </label>
                   <Field
@@ -291,7 +278,7 @@ const LoginForm = () => {
                       errors.password && touched.password
                         ? "border-red-500"
                         : "border-gray-400"
-                    } border py-1 rounded-md w-full px-1`}
+                    } border py-1 rounded-md w-full text-gray-900  px-1`}
                     type="password"
                     name="password"
                     id="password"
@@ -305,7 +292,7 @@ const LoginForm = () => {
                 </div>
                 <div className="mb-4 h-14">
                   <label
-                    className="block text-gray-600 text-sm mb-1"
+                    className="block text-sm mb-1"
                     htmlFor="confirmPassword"
                   >
                     Confirm Password
@@ -315,7 +302,7 @@ const LoginForm = () => {
                       errors.confirmPassword && touched.confirmPassword
                         ? "border-red-500"
                         : "border-gray-400"
-                    } border py-1 rounded-md w-full px-1`}
+                    } border py-1 rounded-md w-full text-gray-900 px-1`}
                     type="password"
                     name="confirmPassword"
                     id="confirmPassword"
@@ -330,13 +317,13 @@ const LoginForm = () => {
                 </div>
                 <div className="flex flex-row justify-between items-center">
                   <button
-                    className="bg-gray-800 text-white text-sm rounded-md  py-1 px-4 mt-2 hover:bg-gray-700"
+                    className="bg-slate-800 text-white text-sm rounded-md py-1 px-4 mt-2 hover:bg-slate-900 transition duration-200"
                     type="submit"
                   >
                     Register.
                   </button>
                   <button
-                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-700"
+                    className="text-sm rounded-md p-2 mt-2 underline hover:text-gray-300 transition duration-200"
                     onClick={() => {
                       setIsLogin(!isLogin);
                     }}

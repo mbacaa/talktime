@@ -1,6 +1,7 @@
 const express = require('express');
 const {
 	getUser,
+	getUserByUsername,
 	getAllUsers,
 	updateUser,
 	getFriends,
@@ -10,8 +11,9 @@ const verifyToken = require('../middleware/verifyToken.js');
 
 const router = express.Router();
 
-router.get('/', getAllUsers);
+router.get('/', verifyToken, getAllUsers);
 router.get('/:id', verifyToken, getUser);
+router.get('/find/:username', verifyToken, getUserByUsername);
 router.put('/:id', verifyToken, updateUser);
 
 router.get('/:id/friends', getFriends);

@@ -6,12 +6,13 @@ import { useState } from "react";
 import { axiosConfig } from "../../utils/axiosConfig";
 import { VscArrowLeft } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
-import { USER_DATA, updateUserData } from "../../stores/userData";
+import { useCookies } from "react-cookie";
 
 const UpdateProfileForm = () => {
+  const [cookies, setCookie] = useCookies(["USER_DATA", "JWT_TOKEN"]);
+  const USER_DATA = cookies.USER_DATA;
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
-  const currentUser = USER_DATA.get();
 
   const updateValidationSchema = Yup.object().shape({
     username: Yup.string()
@@ -26,14 +27,15 @@ const UpdateProfileForm = () => {
   });
 
   const updateInitialValues = {
-    username: currentUser.username,
-    email: currentUser.email,
+    username: USER_DATA.username,
+    email: USER_DATA.email,
     password: "",
     pictureFile: "",
   };
 
   const logout = () => {
-    updateUserData(null, null);
+    setCookie("USER_DATA", null);
+    setCookie("JWT_TOKEN", null);
     navigate("/");
   };
 
@@ -45,7 +47,7 @@ const UpdateProfileForm = () => {
       }
       formData.append("picture", values.pictureFile.name);
       const updatedUserResponse = await axiosConfig.put(
-        `/users/${currentUser._id}`,
+        `/users/${USER_DATA._id}`,
         formData,
       );
       const updatedUser = await updatedUserResponse.data;
@@ -70,7 +72,7 @@ const UpdateProfileForm = () => {
           }}
           className="text-2xl justify-end ml-auto"
         >
-          <VscArrowLeft className="text-gray-700 hover:text-gray-900" />
+          <VscArrowLeft className="text-gray-100 hover:text-gray-300 mb-2" />
         </button>
       </div>
 
@@ -91,20 +93,17 @@ const UpdateProfileForm = () => {
         }) => (
           <Form className="py-4">
             <div className="mb-4 h-14">
-              <label
-                className="block text-gray-600 text-sm mb-1"
-                htmlFor="username"
-              >
+              <label className="block text-sm mb-1" htmlFor="username">
                 Username
               </label>
 
               <Field
-                placeholder={currentUser.username}
+                placeholder={USER_DATA.username}
                 className={`${
                   errors.username && touched.username
                     ? "border-red-500"
                     : "border-gray-400"
-                } border py-1 rounded-md w-full text-sm px-1`}
+                } border py-1 text-gray-900 rounded-md w-full text-sm px-1`}
                 type="text"
                 name="username"
                 id="username"
@@ -118,10 +117,7 @@ const UpdateProfileForm = () => {
               />
             </div>
             <div className="mb-4 h-14">
-              <label
-                className="block text-gray-600 text-sm mb-1"
-                htmlFor="email"
-              >
+              <label className="block  text-sm mb-1" htmlFor="email">
                 Email
               </label>
 
@@ -130,7 +126,7 @@ const UpdateProfileForm = () => {
                   errors.username && touched.username
                     ? "border-red-500"
                     : "border-gray-400"
-                } border py-1 rounded-md w-full text-sm px-1`}
+                } border py-1 text-gray-900 rounded-md w-full text-sm px-1`}
                 type="text"
                 name="email"
                 id="email"
@@ -155,7 +151,7 @@ const UpdateProfileForm = () => {
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
                     {!values.pictureFile ? (
-                      <div>{currentUser.picture}</div>
+                      <div>{USER_DATA.picture}</div>
                     ) : (
                       <div>
                         <div>{values.pictureFile.name}</div>
@@ -166,10 +162,7 @@ const UpdateProfileForm = () => {
               </Dropzone>
             </div>
             <div className="mb-4 h-14">
-              <label
-                className="block text-gray-600 text-sm mb-1"
-                htmlFor="password"
-              >
+              <label className="block  text-sm mb-1" htmlFor="password">
                 Password
               </label>
               <Field
@@ -177,7 +170,7 @@ const UpdateProfileForm = () => {
                   errors.password && touched.password
                     ? "border-red-500"
                     : "border-gray-400"
-                } border py-1 rounded-md w-full px-1`}
+                } border py-1 rounded-md text-gray-900 w-full px-1`}
                 type="password"
                 name="password"
                 id="password"
@@ -191,10 +184,7 @@ const UpdateProfileForm = () => {
               />
             </div>
             <div className="mb-4 h-14">
-              <label
-                className="block text-gray-600 text-sm mb-1"
-                htmlFor="confirmPassword"
-              >
+              <label className="block text-sm mb-1" htmlFor="confirmPassword">
                 Confirm Password
               </label>
               <Field
@@ -202,7 +192,7 @@ const UpdateProfileForm = () => {
                   errors.confirmPassword && touched.confirmPassword
                     ? "border-red-500"
                     : "border-gray-400"
-                } border py-1 rounded-md w-full px-1`}
+                } border py-1 text-gray-900 rounded-md w-full px-1`}
                 type="password"
                 name="confirmPassword"
                 id="confirmPassword"
@@ -218,7 +208,7 @@ const UpdateProfileForm = () => {
             </div>
             <div className="flex flex-row justify-between items-center">
               <button
-                className="bg-gray-800 text-white text-sm rounded-md  py-1 px-4 mt-2 hover:bg-gray-700"
+                className="bg-slate-800 text-white text-sm rounded-md py-1 px-4 mt-2 hover:bg-slate-900 transition duration-200"
                 type="submit"
               >
                 Update.

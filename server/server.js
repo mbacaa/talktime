@@ -10,6 +10,8 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth.js');
 const usersRoutes = require('./routes/users.js');
+const conversationsRoutes = require('./routes/conversations.js');
+const messagesRoutes = require('./routes/messages.js');
 const { register } = require('./controllers/auth.js');
 const { updateUser } = require('./controllers/users.js');
 
@@ -54,6 +56,8 @@ app.post('/api/users/update', upload.single('pictureFile'), updateUser);
 /* ROUTES */
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/conversations', conversationsRoutes);
+app.use('/api/messages', messagesRoutes);
 
 /* LISTENING */
 app.listen(PORT, () => {

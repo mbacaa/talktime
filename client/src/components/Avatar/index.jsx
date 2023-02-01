@@ -24,10 +24,10 @@ const Avatar = ({ username, picture }) => {
           <img
             src={pictureUrl}
             alt="User Avatar"
-            className="w-14 h-14 object-fill rounded-lg border-2 border-gray-300 hover:border-gray-700 shadow-sm hover:shadow-lg transition-shadow duration-3"
+            className="h-14 w-14 object-cover rounded-lg border-2 border-gray-700 mx-auto"
           />
           {showUsername && (
-            <div className="z-10 inline-block my-2 px-2 py-1 text-sm font-medium text-white opacity-100 :hover-opacity-0 transition-opacity duration-300 bg-gray-800 rounded-lg shadow-sm ">
+            <div className="z-10 absolute left-0 inline-block my-1 px-2 py-1 text-sm font-medium text-white opacity-100 :hover-opacity-0 transition-opacity duration-300 bg-gray-800 rounded-lg shadow-sm ">
               {username}
             </div>
           )}

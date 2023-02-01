@@ -12,6 +12,19 @@ const getUser = async (req, res) => {
 	}
 };
 
+const getUserByUsername = async (req, res) => {
+	try {
+		const { username } = req.params;
+		const user = await User.findOne({ username });
+		if (!user) {
+			return res.status(404).send({ error: 'User not found' });
+		}
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(404).json({ message: err.message });
+	}
+};
+
 const getAllUsers = async (req, res) => {
 	try {
 		const users = await User.find();
@@ -74,12 +87,12 @@ const addRemoveFriend = async (req, res) => {
 		const friends = await Promise.all(
 			user.friends.map((id) => User.findById(id))
 		);
-		const formatFriends = friends.map(
+		const formattedFriends = friends.map(
 			({ _id, username, email, friends, picture }) => {
 				return { _id, username, email, friends, picture };
 			}
 		);
-		res.status(200).json(formatFriends);
+		res.status(200).json(formattedFriends);
 	} catch (err) {
 		res.status(404).json({ message: err.message });
 	}
@@ -91,4 +104,5 @@ module.exports = {
 	updateUser,
 	getFriends,
 	addRemoveFriend,
+	getUserByUsername,
 };

@@ -1,8 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{html,js,jsx}"],
+  darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        chatHeight: "36rem",
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };
