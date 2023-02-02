@@ -6,6 +6,8 @@ module.exports = {
     extend: {
       height: {
         chatHeight: "36rem",
+        convHeight: "35rem",
+        adminHeight: "16rem",
       },
     },
   },

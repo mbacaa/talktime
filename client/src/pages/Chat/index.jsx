@@ -168,7 +168,9 @@ const Chat = () => {
                 <ActiveFriends
                   onlineUsers={onlineUsers}
                   currentId={user._id}
+                  setConversations={setConversations}
                   setCurrentConversation={setCurrentConversation}
+                  conversations={conversations}
                   handleConv={handleConv}
                 />
               </div>

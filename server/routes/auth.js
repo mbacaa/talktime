@@ -1,8 +1,10 @@
 const express = require('express');
-const { login } = require('../controllers/auth.js');
+const { login, verifyEmail } = require('../controllers/auth.js');
 
 const router = express.Router();
 
 router.post('/login', login);
+
+router.get('/verifyUser/:id', verifyEmail);
 
 module.exports = router;

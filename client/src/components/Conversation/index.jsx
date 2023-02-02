@@ -33,7 +33,7 @@ const Conversation = (props) => {
   return (
     <div>
       {user && (
-        <div className="p-2 flex items-center hover:bg-gray-50/10">
+        <div className="p-2 flex items-center hover:bg-white/10 text-gray-800 hover:text-gray-900 ">
           <img
             src={
               `http://localhost:4000/assets/${user.picture}` || defaultPicture
@@ -41,7 +41,7 @@ const Conversation = (props) => {
             alt="Conversation"
             className="h-16 w-16 object-cover rounded-lg border-2 border-gray-700 m-1 mr-4"
           />
-          <div className="text-gray-900 font-bold text-md">{user.username}</div>
+          <div className="font-bold text-md">{user.username}</div>
         </div>
       )}
     </div>

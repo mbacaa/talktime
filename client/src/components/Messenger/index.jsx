@@ -26,7 +26,7 @@ const Messenger = (props) => {
         ))}
       </div>
 
-      <div className="p-4 flex gap-4 justify-end">
+      <div className="p-4 pt-0 flex gap-4 justify-end">
         <textarea
           onChange={(e) => {
             setNewMessage(e.target.value);

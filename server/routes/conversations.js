@@ -8,11 +8,10 @@ const verifyToken = require('../middleware/verifyToken.js');
 
 const router = express.Router();
 
-router.post('/', verifyToken, createConversation);
+router.post('/', createConversation);
 router.get('/:userId', verifyToken, getConversation);
 router.get(
 	'/find/:firstUserId/:secondUserId',
-	verifyToken,
 	getPrivateConversation
 );
 

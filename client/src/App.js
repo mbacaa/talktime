@@ -9,8 +9,9 @@ import ManageFriends from "./pages/ManageFriends";
 import AdminPanel from "./pages/AdminPanel";
 
 const App = () => {
-  const [cookies] = useCookies(["JWT_TOKEN"]);
+  const [cookies] = useCookies(["USER_DATA", "JWT_TOKEN"]);
   const isAuth = cookies.JWT_TOKEN ? true : false;
+  const isAdmin = isAuth && cookies.USER_DATA.isAdmin ? true : false;
   return (
     <div>
       <BrowserRouter>
@@ -34,8 +35,7 @@ const App = () => {
           ></Route>
           <Route
             path="/admin"
-            // element={isAdmin ? <AdminPanel /> : <Navigate to="/" />}
-            element={<AdminPanel />}
+            element={isAdmin ? <AdminPanel /> : <Navigate to="/chat" />}
           />
         </Routes>
       </BrowserRouter>

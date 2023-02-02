@@ -5,10 +5,17 @@ import SmallAvatar from "../SmallAvatar";
 import { axiosConfig } from "../../utils/axiosConfig";
 
 const ActiveFriends = (props) => {
-  const [cookies] = useCookies(["USER_DATA"]);
+  const [cookies] = useCookies(["USER_DATA", "JWT_TOKEN"]);
   const user = cookies.USER_DATA;
   const { username, picture } = user;
-  const { onlineUsers, currentId, handleConv } = props;
+  const {
+    onlineUsers,
+    currentId,
+    handleConv,
+    setConversations,
+    setCurrentConversation,
+    conversations,
+  } = props;
   const [friends, setFriends] = useState([]);
   const [activeFriends, setActiveFriends] = useState([]);
 
@@ -22,6 +29,52 @@ const ActiveFriends = (props) => {
       setFriends(response.data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getConversations = async () => {
+    try {
+      const response = await axiosConfig.get(`/conversations/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.JWT_TOKEN}`,
+        },
+      });
+      setConversations(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createNewConversation = async (friendId) => {
+    console.log(user._id, friendId);
+    try {
+      const response = await axiosConfig.post(`/conversations/`, {
+        headers: {
+          Authorization: `Bearer ${cookies.JWT_TOKEN}`,
+        },
+        senderId: user._id,
+        receiverId: friendId,
+      });
+      setCurrentConversation(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleGoToConversation = (friendId) => async () => {
+    await getConversations();
+    const conversation = conversations.find((conv) => {
+      return (
+        conv.members.includes(user._id) &&
+        conv.members.includes(friendId) &&
+        conv.members.length === 2
+      );
+    });
+
+    if (conversation) {
+      setCurrentConversation(conversation);
+    } else {
+      createNewConversation(friendId);
     }
   };
 
@@ -44,7 +97,7 @@ const ActiveFriends = (props) => {
       </div>
       <div>
         {activeFriends.map((friend) => (
-          <div key={friend._id}>
+          <div onClick={handleGoToConversation(friend._id)} key={friend._id}>
             <SmallAvatar
               username={friend.username}
               picture={friend.picture}

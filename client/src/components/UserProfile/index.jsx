@@ -44,6 +44,7 @@ const UserProfile = () => {
         },
       );
       setCookie("USER_DATA", { ...USER_DATA, friends: response.data });
+      setIsFriend(!isFriend);
     } catch (error) {
       console.log(error);
     }
@@ -58,7 +59,6 @@ const UserProfile = () => {
           },
         })
         .then(() => {
-          setIsFriend(!isFriend);
           updateFriends();
         })
         .catch((err) => {

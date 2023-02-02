@@ -4,6 +4,7 @@ const {
 	getUserByUsername,
 	getAllUsers,
 	updateUser,
+	deleteUser,
 	getFriends,
 	addRemoveFriend,
 } = require('../controllers/users.js');
@@ -15,6 +16,7 @@ router.get('/', verifyToken, getAllUsers);
 router.get('/:id', verifyToken, getUser);
 router.get('/find/:username', verifyToken, getUserByUsername);
 router.put('/:id', verifyToken, updateUser);
+router.delete('/:id', verifyToken, deleteUser);
 
 router.get('/:id/friends', getFriends);
 router.patch('/:id/:friendId', addRemoveFriend);

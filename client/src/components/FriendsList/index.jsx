@@ -49,16 +49,16 @@ const FriendsList = () => {
   };
 
   return (
-    <div className="w-full h-full p-6 flex flex-col gap-2">
-      <div>
+    <div className="w-full h-full flex flex-col gap-2">
+      <div className="p-6 pb-0">
         <div className="font-bold text-3xl justify-start">Your friends.</div>
         <div className="text-sm justify-start">Manage your friends</div>
       </div>
-      <div className="flex flex-col w-full mt-6 gap-4">
+      <div className="flex flex-col w-full mt-4">
         {friends.map((friend) => (
           <div
             key={friend._id}
-            className="flex flex-row gap-2 justify-between items-center "
+            className="flex flex-row gap-2 justify-between items-center w-full hover:bg-white/10 px-6 py-2"
           >
             <div className="flex flex-row justify-center items-center gap-4">
               <button

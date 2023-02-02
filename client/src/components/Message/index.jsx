@@ -1,13 +1,37 @@
 import React from "react";
 import SmallAvatar from "../SmallAvatar";
 import { format } from "timeago.js";
+import { useState, useEffect } from "react";
+import { axiosConfig } from "../../utils/axiosConfig";
+import { useCookies } from "react-cookie";
 
 const Message = (props) => {
   const { currentUser, message } = props;
+  const [cookies] = useCookies(["USER_DATA", "JWT_TOKEN"]);
+  const USER_DATA = cookies.USER_DATA;
+  const [user, setUser] = useState({});
+
+  const getUser = async () => {
+    try {
+      const response = await axiosConfig.get(`/users/${message.sender}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.JWT_TOKEN}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    message.sender !== USER_DATA._id && getUser();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div>
       {currentUser ? (
-        <div className="flex flex-col mt-2 p-2 mr-4 ">
+        <div className="flex flex-col mt-2 p-2 pb-0 mr-4 ">
           <div className="flex justify-end">
             <div className="flex flex-col">
               <div className="mr-4 p-3 text-left rounded-lg text-sm bg-slate-900/80 h-min max-w-sm break-words">
@@ -19,8 +43,8 @@ const Message = (props) => {
             </div>
             <div>
               <SmallAvatar
-                username={"BartekMinecraftPL"}
-                picture={"furas.jpg"}
+                username={USER_DATA.username}
+                picture={USER_DATA.picture}
                 badge={false}
               />
             </div>
@@ -31,8 +55,8 @@ const Message = (props) => {
           <div className="flex">
             <div>
               <SmallAvatar
-                username={"BartekMinecraftPL"}
-                picture={"bartek.jpg"}
+                username={user.username}
+                picture={user.picture}
                 badge={false}
               />
             </div>
